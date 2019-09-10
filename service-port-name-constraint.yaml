@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedServicePortName
+metadata:
+  name: svc-port-name-constraint
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Service"]
+    namespaces: ["default"]
+    # alternatively you can limit it to namespaces where istio-injection is enabled
+    # namespaceSelector:
+    #   istio-injection: enabled
+  parameters:
+    prefixes: ["http-", "http2-", "grpc-", "mongo-", "redis-", "tcp-"]
