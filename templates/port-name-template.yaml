@@ -16,7 +16,7 @@ spec:
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
-        package istio.audit.allowedserviceportname
+        package istio.allowedserviceportname
 
         violation[{"msg": msg, "details": {"missing_prefixes": prefixes}}] {
           service := input.review.object
