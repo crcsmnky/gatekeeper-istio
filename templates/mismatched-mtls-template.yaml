@@ -1,0 +1,32 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: mismatchedmtls
+spec:
+  crd:
+    spec:
+      names:
+        kind: MismatchedMtls
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package istio.mismatchedmtls
+
+        violation[{"msg":msg}] {
+            d := input.review.object
+            p := data.inventory.namespace[d.metadata.namespace]["authentication.istio.io/v1alpha1"]["Policy"][_]
+            
+            targets := { t | t := p.spec.targets[_]["name"] }
+            host := d.spec.host
+            
+            targets[host]
+            
+            peermode := { m | m := p.spec.peers[_]["mode"] }
+            peermode["STRICT"]
+            
+            drtls := { m | m := d.spec.trafficPolicy.tls.mode }
+            drtls["DISABLE"]
+            
+            msg := sprintf("%v %v mTLS settings (mode: %v) conflict with %v %v mTLS settings (mode: %v)",
+              [d.kind, d.metadata.name, drtls, p.kind, p.metadata.name, peermode])
+        }

@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MismatchedMtls
+metadata:
+  name: mismatched-mtls-constraint
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+      - apiGroups: ["networking.istio.io"]
+        kinds: ["DestinationRule"]
+    namespaces: ["default"]
