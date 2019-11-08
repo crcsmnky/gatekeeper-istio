@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: UniqueVserviceHostname
+metadata:
+  name: unique-vs-host-constraint
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+      - apiGroups: ["networking.istio.io"]
+        kinds: ["VirtualService"]
+    namespaces: ["default"]
