@@ -27,3 +27,6 @@ spec:
       - group: "authentication.istio.io"
         version: "v1alpha1"
         kind: "Policy"
+      - group: "rbac.istio.io"
+        version: "v1alpha1"
+        kind: "ServiceRoleBinding"
