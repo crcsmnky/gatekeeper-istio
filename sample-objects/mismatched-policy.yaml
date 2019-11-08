@@ -1,0 +1,10 @@
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: app-policy
+spec:
+  targets:
+  - name: app
+  peers:
+  - mtls: {}
+    mode: STRICT
