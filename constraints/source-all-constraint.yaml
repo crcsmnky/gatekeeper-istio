@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: DisallowSourceAll
+metadata:
+  name: source-all-constraint
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: ["rbac.istio.io"]
+        kinds: ["ServiceRoleBinding"]
+    namespaces: ["default"]

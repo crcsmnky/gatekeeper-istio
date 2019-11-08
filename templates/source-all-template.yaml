@@ -1,0 +1,44 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: disallowsourceall
+spec:
+  crd:
+    spec:
+      names:
+        kind: DisallowSourceAll
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package istio.disallowsourceall
+
+        # spec.subjects[].properties["source.principal"] does not exist
+        violation[{"msg":msg}] {
+            p := input.review.object
+            
+            sources = { 
+                source | p.spec.subjects[_][props][source]
+                props == "properties"
+            }
+            
+            not sources["source.principal"]
+
+            msg := sprintf("%v %v.%v source.principals must be set", 
+              [p.kind, p.metadata.name, p.metadata.namespace])
+        }
+
+        # spec.subjects[].properties["source.principal"] is set to '*'
+        violation[{"msg":msg}] {
+            p := input.review.object
+
+            principals = {
+                pr | pr := p.spec.subjects[_][props][source]
+                props == "properties"
+                source == "source.principal"
+            }
+            
+            principals["*"]
+
+            msg := sprintf("%v %v.%v source.principal cannot contain '*'", 
+              [p.kind, p.metadata.name, p.metadata.namespace])
+        }
