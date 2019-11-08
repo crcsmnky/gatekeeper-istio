@@ -1,0 +1,20 @@
+apiVersion: rbac.istio.io/v1alpha1
+kind: ServiceRole
+metadata:
+  name: my-test-role
+spec:
+  rules:
+  - services: ["app.default.svc.cluster.local"]
+    methods: ["GET"]
+---
+apiVersion: rbac.istio.io/v1alpha1
+kind: ServiceRoleBinding
+metadata:
+  name: my-test-role-binding
+spec:
+  subjects:
+  - properties:
+      source.principal: "*"
+  roleRef:
+    kind: ServiceRole
+    name: "my-test-role"
