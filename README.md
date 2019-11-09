@@ -11,7 +11,7 @@
 
 ## Overview
 
-This repo contains a set of example policies that can be used to enforce specic service mesh structure. Specifically, the policies are managed by [OPA Gatekeeper](open-policy-agent/gatekeeper) and used to enforce specific production-friendly [Istio](http://istio.io) behaviors.
+This repo contains a set of example policies that can be used to enforce specic service mesh structure. Specifically, the policies are managed by [OPA Gatekeeper](http://github.com/open-policy-agent/gatekeeper) and used to enforce specific production-friendly [Istio](http://istio.io) behaviors.
 
 ## Project setup
 
@@ -80,7 +80,7 @@ helm template install/kubernetes/helm/istio \
 
 ## Install and configure Gatekeeper
 
-Refer to the [OPA Gatekeeper](open-policy-agent/gatekeeper) repo for docs and additional background on `Constraint` and `ConstraintTemplate` objects.
+Refer to the [OPA Gatekeeper](http://github.com/open-policy-agent/gatekeeper) repo for docs and additional background on `Constraint` and `ConstraintTemplate` objects.
 
 - Install the `gatekeeper` controller
 
