@@ -1,29 +1,40 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: sleep
+  name: helloworld
   labels:
-    app: sleep
+    app: helloworld
 spec:
   ports:
-  - port: 80
-    name: sleep
+  - port: 5000
+    name: helloport
   selector:
-    app: sleep
+    app: helloworld
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sleep
+  name: helloworld
+  labels:
+    version: v1
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+      version: v1
   template:
     metadata:
       labels:
-        app: sleep
+        app: helloworld
+        version: v1
     spec:
       containers:
-      - name: sleep
-        image: tutum/curl
-        command: ["/bin/sleep","infinity"]
-        imagePullPolicy: IfNotPresent
+      - name: helloworld
+        image: docker.io/istio/examples-helloworld-v1
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 5000
