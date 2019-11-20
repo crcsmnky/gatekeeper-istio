@@ -1,0 +1,10 @@
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: app-policy-2
+spec:
+  targets:
+  - name: app2
+  peers:
+  - mtls: {}
+    mode: PERMISSIVE
