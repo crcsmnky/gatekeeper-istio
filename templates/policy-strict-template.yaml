@@ -1,0 +1,48 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: policystrictonly
+spec:
+  crd:
+    spec:
+      names:
+        kind: PolicyStrictOnly
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package istio.policystrictonly
+
+        # VIOLATION spec.peers does not exist
+        violation[{"msg": msg}] {          
+          p := input.review.object
+
+          speckeys := { k | p.spec[k]}
+          not speckeys["peers"]
+          
+          msg := sprintf("%v %v.%v spec.peers does not exist", 
+            [p.kind, p.metadata.name, p.metadata.namespace])
+        } 
+
+        # VIOLATION spec.peers is []
+        violation[{"msg": msg}] {
+          p := input.review.object          
+          k := "peers"
+
+          p.spec[k] == []
+          
+          msg := sprintf("%v %v.%v spec.peers cannot be empty", 
+            [p.kind, p.metadata.name, p.metadata.namespace])
+        } 
+
+        # VIOLATION peer authentication is set to permissive
+        violation[{"msg": msg}] {
+          p := input.review.object
+          kp := "peers"
+          km := "mode"
+          
+          peermethod := p.spec[kp][_]
+          peermethod[km] != "STRICT"
+          
+          msg := sprintf("%v %v.%v spec.peers must include [{mtls: {}, mode: STRICT}]", 
+            [p.kind, p.metadata.name, p.metadata.namespace])
+        }
