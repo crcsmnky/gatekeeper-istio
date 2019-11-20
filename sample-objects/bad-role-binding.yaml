@@ -1,20 +1,21 @@
 apiVersion: rbac.istio.io/v1alpha1
 kind: ServiceRole
 metadata:
-  name: my-test-role
+  name: authz-role
 spec:
   rules:
-  - services: ["app.default.svc.cluster.local"]
+  - services: ["backend.foo.svc.cluster.local"]
     methods: ["GET"]
 ---
 apiVersion: rbac.istio.io/v1alpha1
 kind: ServiceRoleBinding
 metadata:
-  name: my-test-role-binding
+  name: authz-role-binding
 spec:
   subjects:
   - properties:
       source.principal: "*"
+      source.namespace: "test"
   roleRef:
     kind: ServiceRole
-    name: "my-test-role"
+    name: "authz-role"
