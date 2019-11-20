@@ -99,7 +99,7 @@ kubectl apply -f gatekeeper-config.yaml
 
 ## Enforcing structural policies
 
-This repo contains 4 example policies in [`templates`](/templates) and [`constraints`](/constraints):
+This repo contains 5 example policies in [`templates`](/templates) and [`constraints`](/constraints):
 
 ### Auditing services for not using correct port-naming convention
 
@@ -126,7 +126,7 @@ kubectl get allowedserviceportname.constraints.gatekeeper.sh port-name-constrain
 
 ### Preventing VirtualService hostname matching collisions
 
-Checks incoming `VirtualService` objects and compares them against existing `VirtualService` objects, and throws a violation if there are hostname/URI match collisions..
+Checks incoming `VirtualService` objects and compares them against existing `VirtualService` objects, and throws a violation if there are hostname/URI match collisions.
 
 Upload the `ConstraintTemplate` and `Constraint`:
 
@@ -188,7 +188,36 @@ Test the `Constraint` with the sample object:
 kubectl apply -f sample-objects/bad-role-binding.yaml
 ```
 
-This `Constraint` set `enforcementAction: deby` so the object should not be admitted to the cluster, and should return an error message.
+This `Constraint` set `enforcementAction: deny` so the object should not be admitted to the cluster, and should return an error message.
+
+### Preventing services from disabling mTLS
+
+Checks `Policy` objects and throws a violation if they attempt to disable mTLS for a specific service.
+
+Apply a bad `Policy` sample object:
+
+```
+kubectl apply -f sample-objects/bad-policy-1.yaml
+```
+
+Upload the `ConstraintTemplate` and `Constraint`:
+
+```
+kubectl apply -f templates/policy-strict-template.yaml
+kubectl apply -f constraints/policy-strict-constraint.yaml
+```
+
+Test the `Constraint` with another sample object:
+
+```
+kubectl apply -f sample-objects/bad-policy-2.yaml
+```
+
+This `Constraint` set `enforcementAction: deny` so `bad-policy-2.yaml` should not be admitted to the cluster, and should return an error message. And because there was a pre-existing object that now violates the `Constraint` you can check the `status` field to see that violation:
+
+```
+kubectl get policystrictonly.constraints.gatekeeper.sh policy-strict-only -o yaml
+```
 
 ## Cleanup
 
