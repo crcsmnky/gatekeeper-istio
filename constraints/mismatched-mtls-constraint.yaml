@@ -3,7 +3,7 @@ kind: MismatchedMtls
 metadata:
   name: mismatched-mtls-constraint
 spec:
-  enforcementAction: dryrun
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: ["networking.istio.io"]
