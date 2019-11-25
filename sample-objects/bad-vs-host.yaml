@@ -25,7 +25,7 @@ spec:
   http:
   - match:
     - uri:
-        exact: /app
+        exact: /
     route:
     - destination:
         host: app1
